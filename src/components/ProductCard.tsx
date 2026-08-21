@@ -1,22 +1,12 @@
 import React from 'react';
-import { Card, Tag, Rate, Typography, Flex } from 'antd';
+import { Card, Tag, Typography, Flex, Button } from 'antd';
+import { type Product } from '@/api/productsApi';
+import { useAppDispatch } from '@/store/hooks';
+import { addToCart } from '@/store/CartSlice';
+import { ShoppingCartOutlined } from "@ant-design/icons";
 
 const { Meta } = Card;
 const { Text } = Typography;
-
-export interface Product {
-  id: number;
-  title: string;
-  description: string;
-  category: string;
-  price: number;
-  discountPercentage?: number;
-  rating: number;
-  stock: number;
-  brand?: string;
-  availabilityStatus?: string;
-  thumbnail: string;
-}
 
 interface ProductCardProps {
   product: Product;
@@ -24,6 +14,13 @@ interface ProductCardProps {
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
+  const dispatch = useAppDispatch();
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    dispatch(addToCart(product));
+  };
+  
   return (
     <Card
       hoverable
@@ -70,12 +67,14 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) =>
           )}
         </div>
 
-        <Flex align="center" gap={4}>
-          <Rate disabled allowHalf defaultValue={product.rating} style={{ fontSize: 12 }} />
-          <Text type="secondary" style={{ fontSize: 12 }}>
-            {product.rating}
-          </Text>
-        </Flex>
+        <Button
+          type="primary"
+          icon={<ShoppingCartOutlined />}
+          onClick={handleAddToCart}
+          size="small"
+        >
+          Add
+        </Button>
       </Flex>
     </Card>
   );
